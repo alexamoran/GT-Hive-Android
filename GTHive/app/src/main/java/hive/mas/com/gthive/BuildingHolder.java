@@ -31,7 +31,7 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
 
         mActivity = activity;
         mNameTextView = (TextView) itemView.findViewById(R.id.list_item_building_name_text_view);
-        mOccupancyTextView = (TextView) itemView.findViewById(R.id.list_item_building_occupancy_text_view);
+        //mOccupancyTextView = (TextView) itemView.findViewById(R.id.list_item_building_occupancy_text_view);
         mPercentageOccupiedTextView = (TextView) itemView.findViewById(R.id.percentage_occupied_text_view);
         mFavoriteCheckbox = (CheckBox) itemView.findViewById(R.id.favorite_button);
     }
@@ -39,7 +39,7 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
     public void bindBuilding(Building building) {
         mBuilding = building;
         mNameTextView.setText(mBuilding.getName());
-        mOccupancyTextView.setText("" + mBuilding.getOccupancy());
+        //mOccupancyTextView.setText("" + mBuilding.getOccupancy());
 
         setFavoriteCheckbox();
 
@@ -68,31 +68,14 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
     public void setPercentageOccupiedTextView(int occupancyPercentage) {
 
         int color;
-        switch (occupancyPercentage / 10) {
-            case 10: color = R.color.Red10;
-                break;
-            case 9:  color = R.color.Red9;
-                break;
-            case 8:  color = R.color.Red8;
-                break;
-            case 7:  color = R.color.Yellow7;
-                break;
-            case 6:  color = R.color.Yellow6;
-                break;
-            case 5:  color = R.color.Yellow5;
-                break;
-            case 4:  color = R.color.Yellow4;
-                break;
-            case 3:  color = R.color.Green3;
-                break;
-            case 2:  color = R.color.Green2;
-                break;
-            case 1:  color = R.color.Green1;
-                break;
-            case 0:  color = R.color.Green1;
-                break;
-            default: color = R.color.Red11;
-                break;
+        if (occupancyPercentage <= 80) {
+            color = R.color.Green3;
+        } else if (occupancyPercentage <= 90) {
+            color = R.color.Yellow6;
+        } else if (occupancyPercentage <= 95) {
+            color = R.color.Red9;
+        } else {
+            color = R.color.Red11;
         }
 
         mPercentageOccupiedTextView.setText("" + occupancyPercentage + "%");
@@ -112,8 +95,8 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
         }
     }
 
+    // Deafault favorites to false except buildings already in favorites
     public void setFavoriteCheckbox() {
-
         mFavoriteCheckbox.setChecked(false);
         if (mBuilding.isFavorite(mActivity)) {
             mFavoriteCheckbox.setChecked(true);

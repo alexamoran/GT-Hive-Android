@@ -6,58 +6,61 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    card_view:cardCornerRadius="4dp"
-    android:layout_margin="5dp">
+    android:layout_margin="0.2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/OldGold">
+        android:background="@color/white"
+        android:weightSum="1"
+        android:minHeight="70dp">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="272dp"
             android:layout_height="match_parent"
-            android:background="@color/OldGold"
-            android:layout_weight="1">
+            >
 
             <TextView
                 style="@style/CardTextStyle"
                 android:id="@+id/list_item_building_name_text_view"
                 android:gravity="start"
-                tools:text="Building Name"/>
+                tools:text="Building Name"
+                android:layout_centerVertical="true"/>
 
-            <TextView
-                style="@style/CardTextStyle"
-                android:id="@+id/list_item_building_occupancy_text_view"
-                android:layout_below="@id/list_item_building_name_text_view"
-                tools:text="Building Id"/>
         </RelativeLayout>
 
         <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="1">
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                       android:id="@+id/percentage_occupied_text_view"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
+                      android:layout_width="40dp"
+                      android:layout_height="40dp"
                       style="@style/PercentageOccupiedBox"
-                      android:text="99"
-                      android:layout_gravity="center_vertical"/>
+                      android:text="99%"
+                      android:layout_gravity="center_vertical"
+                      android:layout_centerVertical="true"
+                      android:layout_alignParentRight="true"
+                      android:layout_alignParentEnd="true"
+                />
 
             <CheckBox
                 android:id="@+id/favorite_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#00ffffff"
-                android:paddingRight="10dp"
                 android:checked="false"
                 android:clickable="true"
                 android:gravity="right"
                 android:layout_gravity="center_vertical"
                 android:button="@drawable/favorite_button_states"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:allowUndo="false"
+                android:layout_marginLeft="10dp"
+                />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

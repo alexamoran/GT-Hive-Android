@@ -23,4 +23,7 @@
     <color name="Green3">#34b246</color>
     <color name="Green2">#23772f</color>
     <color name="Green1">#2a6323</color>
+
+    <color name="lightBlue">#556be7</color>
+    <color name="darkBlue">#1832c9</color>
 </resources>
