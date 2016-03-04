@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/list_item_floor_layout"
+    android:id="@+id/list_item_floor_layout"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
-    
+              android:layout_height="wrap_content"
+              android:minHeight="70dp">
+
     <TextView
         android:id="@+id/floor_number_text_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_weight="0.44"
         android:textSize="18dp"
-        android:textStyle="bold"
         android:paddingLeft="5dp"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp"/>
+        android:paddingBottom="2dp"
+        android:text="Floor"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:id="@+id/floor_occupancy_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="5dp"/>
+        android:layout_width="42dp"
+        android:layout_height="40dp"
+        android:paddingRight="5dp"
+        android:layout_marginTop="15dp"/>
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/percentage_occupied_text_view"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
+              style="@style/PercentageOccupiedBox"
+              android:text="99%"
+              android:layout_gravity="center_vertical"
+              android:layout_centerVertical="true"
+              android:layout_alignParentRight="true"
+              android:layout_alignParentEnd="true"
+              android:layout_marginRight="10dp"/>
 
 </LinearLayout>
+
+    <!--android:textStyle="bold" in order to bolden the text , used it in the textview with the building name & occupancy-->

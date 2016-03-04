@@ -7,7 +7,7 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/sliding_tabs"
-        android:background="@color/lightBlue"
+        android:background="@color/darkBlue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1"
-        android:background="@color/black"
+        android:background="@color/lightBlue"
         />
 
 </LinearLayout>

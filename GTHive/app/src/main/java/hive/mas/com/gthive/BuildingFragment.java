@@ -48,13 +48,14 @@ public class BuildingFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_building, container, false);
 
+        //This sets the worng name for some reason
         getActivity().setTitle(mBuilding.getName());
 
-        mNameTextView = (TextView) v.findViewById(R.id.building_name);
-        mNameTextView.setText(mBuilding.getName());
+        //mNameTextView = (TextView) v.findViewById(R.id.building_name);
+        //mNameTextView.setText(mBuilding.getName());
 
         mOccupancyTextView = (TextView) v.findViewById(R.id.occupancy);
-        mOccupancyTextView.setText("" + mBuilding.getOccupancy());
+        mOccupancyTextView.setText("" + mBuilding.getName()+ "\n" + "Total Occupancy: "+ mBuilding.getOccupancy());
 
 
         /* Draw Line Graph */
