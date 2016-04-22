@@ -2,6 +2,7 @@ package hive.mas.com.gthive;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 
 public class APIFetcher {
 
@@ -44,17 +44,42 @@ public class APIFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public Campus fetchBuildingOccupancies(Campus campus) {
 
-        String domain = "http://104.236.76.46:8080";
-        String uri = "/api/locationinfo/buildings";
-        String url = domain + uri;
+    public Campus getOccupancyOfAllBuildings(Campus campus) {
+
+        String ourAPI = "http://wifi.dssg.rnoc.gatech.edu:3000/api/count/?details=true"; //building_id=" + bid.getID();
 
         try {
-            String jsonString = getUrlString(url);
-            Log.i(TAG, "Received JSON: " + jsonString);
+            String jsonString = getUrlString(ourAPI);
+            //Log.i(TAG, "TEST: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
-            parseBuildingOccupancies(campus, jsonBody);
+            //Log.i(TAG, "TEST2: " + jsonBody.optJSONArray("AccessPoints"));
+            JSONArray accessPoints = jsonBody.optJSONArray("AccessPoints");
+
+            for(int i = 0; i < accessPoints.length(); i++) {
+                JSONObject ap = accessPoints.optJSONObject(i);
+                Log.i(TAG, "APS: " + ap);
+                String b_id = ap.getString("building_id");
+                String buildingName = ap.getString("building_name");
+                char floor = ap.getString("floor").charAt(0);
+                int occupancy = ap.getInt("clientcount");
+
+                if (campus.getBuilding(b_id) == null) {
+                    Building newBuilding = new Building(b_id, buildingName);
+                    campus.addBuilding(newBuilding);
+                } else {
+                    int buildingOcc = campus.getBuilding(b_id).getOccupancy() + occupancy;
+                    campus.getBuilding(b_id).setOccupancy(buildingOcc);
+                }
+
+                if (campus.getBuilding(b_id).getFloor(floor) == null) {
+                    Floor newFloor = new Floor(b_id, floor);
+                    campus.getBuilding(b_id).addFloor(newFloor);
+                } else {
+                    int floorOcc = campus.getBuilding(b_id).getFloor(floor).getOccupancy() + occupancy;
+                    campus.getBuilding(b_id).getFloor(floor).setOccupancy(floorOcc);
+                }
+            }
         } catch (JSONException je) {
             Log.e(TAG, "Failed to parse JSON", je);
         } catch (IOException ioe) {
@@ -62,65 +87,5 @@ public class APIFetcher {
         }
 
         return campus;
-    }
-
-    private void parseBuildingOccupancies(Campus campus, JSONObject jsonBody) throws IOException, JSONException {
-        JSONObject occupanciesJsonObject = jsonBody.optJSONObject("occupancies");
-        Iterator<?> b_ids = occupanciesJsonObject.keys();
-
-        while (b_ids.hasNext()) {
-            String b_id = (String) b_ids.next();
-            if (occupanciesJsonObject.get(b_id) instanceof JSONObject) {
-                JSONObject buildingJsonObject = (JSONObject) occupanciesJsonObject.get(b_id);
-
-                int occupancy = buildingJsonObject.getInt("occupancy");
-
-                // Update the occupancy of the building
-                campus.getBuilding(b_id).setOccupancy(occupancy);
-
-                Log.i(TAG, b_id + ": " + occupancy);
-            }
-        }
-    }
-
-    public Campus fetchFloorOccupancies(Campus campus) {
-
-        String domain = "http://104.236.76.46:8080";
-        String uri = "/api/locationinfo/floors";
-        String url = domain + uri;
-
-        try {
-            String jsonString = getUrlString(url);
-            Log.i(TAG, "Received JSON: " + jsonString);
-            JSONObject jsonBody = new JSONObject(jsonString);
-            parseFloorOccupancies(campus, jsonBody);
-        } catch (JSONException je) {
-            Log.e(TAG, "Failed to parse JSON", je);
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch items", ioe);
-        }
-
-        return campus;
-    }
-
-    private void parseFloorOccupancies(Campus campus, JSONObject jsonBody) throws IOException, JSONException {
-        JSONObject occupanciesJsonObject = jsonBody.optJSONObject("occupancies");
-        Iterator<?> aps = occupanciesJsonObject.keys();
-
-        while (aps.hasNext()) {
-            String ap = (String) aps.next();
-
-            int occupancy = occupanciesJsonObject.getInt(ap);
-
-            String b_id = ap.split("_")[0];
-            char floor = (ap.split("_")[1]).charAt(0);
-
-            // Update the occupancy of the building
-            if (campus.getBuilding(b_id) != null && campus.getBuilding(b_id).getFloor(floor) != null) {
-                campus.getBuilding(b_id).getFloor(floor).setOccupancy(occupancy);
-            }
-
-            Log.i(TAG, ap + ": " + occupancy);
-        }
     }
 }

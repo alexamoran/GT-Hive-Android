@@ -10,10 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
-// TODO: Fix loading occupancies / updating UI bug
 public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Activity mActivity;
@@ -43,20 +41,20 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
 
         setFavoriteCheckbox();
 
-        mFavoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//        mFavoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//                Favorites favorites = Favorites.get(mActivity);
+//                if (isChecked) {
+//                    favorites.addBuildingId(mBuilding.getBId());
+//                } else {
+//                    favorites.removeBuildingId(mBuilding.getBId());
+//                }
+//            }
+//        });
 
-                Favorites favorites = Favorites.get(mActivity);
-                if (isChecked) {
-                    favorites.addBuildingId(mBuilding.getBId());
-                } else {
-                    favorites.removeBuildingId(mBuilding.getBId());
-                }
-            }
-        });
-
-        setPercentageOccupiedTextView(((int) (Math.random() * 100)));
+        setPercentageOccupiedTextView(building.getOccupancy());
     }
 
     @Override
@@ -91,15 +89,15 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
             ShapeDrawable shapeDrawable = (ShapeDrawable) background;
             shapeDrawable.getPaint().setColor(ContextCompat.getColor(mActivity, color));
         } else {
-            Log.e("PercentageOccupiedTextView", "not selected");
+            Log.e("PercentOccupiedTextView", "not selected");
         }
     }
 
     // Deafault favorites to false except buildings already in favorites
     public void setFavoriteCheckbox() {
         mFavoriteCheckbox.setChecked(false);
-        if (mBuilding.isFavorite(mActivity)) {
-            mFavoriteCheckbox.setChecked(true);
-        }
+//        if (mBuilding.isFavorite(mActivity)) {
+//            mFavoriteCheckbox.setChecked(true);
+//        }
     }
 }

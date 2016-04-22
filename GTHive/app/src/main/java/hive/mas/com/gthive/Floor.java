@@ -1,24 +1,18 @@
 package hive.mas.com.gthive;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Floor extends Location {
 
     private char mFloorNumber;
-    private List<Room> mRooms;
 
     public Floor(String id) {
         super(id);
         String[] id_arr = id.split("_");
         mFloorNumber = (id_arr.length > 1 ? id_arr[1].charAt(0) : 'n');
-        mRooms = new ArrayList<>();
     }
 
     public Floor(String bId, char floorNumber) {
         super(bId + "_" + floorNumber);
         mFloorNumber = floorNumber;
-        mRooms = new ArrayList<>();
     }
 
     /* Accessors and Modifiers */
@@ -27,15 +21,8 @@ public class Floor extends Location {
         return mFloorNumber;
     }
 
-    public List<Room> getRooms() {
-        return mRooms;
-    }
-
     public void setFloorNumber(char floorNumber) {
         mFloorNumber = floorNumber;
     }
 
-    public void setRooms(List<Room> rooms) {
-        mRooms = rooms;
-    }
 }

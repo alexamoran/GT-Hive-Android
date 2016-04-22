@@ -25,8 +25,8 @@ public class Favorites {
         mBuildingIds = new HashSet<>();
 
         // Temporary: Load CULC, Sigma Chi
-        mBuildingIds.add("166");
-        mBuildingIds.add("324");
+        //mBuildingIds.add("166");
+        //mBuildingIds.add("324");
 
         // TODO: load favorited building ids from text file
     }

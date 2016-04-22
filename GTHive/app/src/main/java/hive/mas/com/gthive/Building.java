@@ -7,19 +7,19 @@ import java.util.List;
 
 public class Building extends Location {
 
-    private List<Room> mRooms;
     private List<Floor> mFloors;
+    private boolean mFavorite;
 
     public Building(String id) {
         super(id);
-        mRooms = new ArrayList<>();
         mFloors = new ArrayList<>();
+        mFavorite = false;
     }
 
     public Building(String id, String name) {
         super(id, name);
-        mRooms = new ArrayList<>();
         mFloors = new ArrayList<>();
+        mFavorite = false;
     }
 
     public boolean isFavorite(Context context) {
@@ -27,6 +27,11 @@ public class Building extends Location {
         Favorites favorites = Favorites.get(context);
 
         return favorites.getBuildingIds().contains(this.getBId());
+    }
+
+    // Add new Floor to the Building
+    public void addFloor(Floor floor) {
+        mFloors.add(floor);
     }
 
     // Returns a String of Floor Numbers
@@ -38,20 +43,8 @@ public class Building extends Location {
         return floors;
     }
 
-    // Returns a String of Room Numbers
-    public String getRoomNumbers() {
-        String rooms = "";
-        for (Room r : getRooms()) {
-            rooms += r.getRoomNumber() + " ";
-        }
-        return rooms;
-    }
-
     /* Accessors and Modifiers */
 
-    public List<Room> getRooms() {
-        return mRooms;
-    }
 
     public List<Floor> getFloors() {
         return mFloors;
@@ -66,11 +59,19 @@ public class Building extends Location {
         return null;
     }
 
-    public void setRooms(List<Room> rooms) {
-        mRooms = rooms;
-    }
-
     public void setFloors(List<Floor> floors) {
         mFloors = floors;
+    }
+
+    public boolean getFavorite() {
+        return mFavorite;
+    }
+
+    public void flipFavorite() {
+        if (mFavorite == false) {
+            mFavorite = true;
+        } else {
+            mFavorite = false;
+        }
     }
 }
