@@ -1,6 +1,8 @@
 package hive.mas.com.gthive;
 
-
+/**
+ * Parent class of Building and floor
+ */
 public class Location {
 
     private String mId;
@@ -21,6 +23,10 @@ public class Location {
         mOccupancy = 0;
     }
 
+    /**
+     * Make sure Building IDs are in the proper form
+     *
+     */
     private void loadBId() {
         mBId = (mId.split("-|_"))[0];
     }

@@ -6,6 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 
 
 public class SplashActivity extends AppCompatActivity {
+    /**
+     * Run a splash screen when the app is opened
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

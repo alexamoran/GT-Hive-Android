@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,12 +19,24 @@ public class BuildingPagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Building> mBuildings;
 
+    /**
+     * Static function to set up intents
+     *
+     * @param packageContext The package we want the intent for
+     * @param buildingId The building being added to the intent
+     * @return The new intent
+     */
     public static Intent newIntent(Context packageContext, String buildingId) {
         Intent intent = new Intent(packageContext, BuildingPagerActivity.class);
         intent.putExtra(EXTRA_BUILDING_ID, buildingId);
         return intent;
     }
 
+    /**
+     * Creates the activity
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +47,7 @@ public class BuildingPagerActivity extends AppCompatActivity {
         // Find ViewPager
         mViewPager = (ViewPager) findViewById(R.id.activity_building_pager_view_pager);
 
-        mBuildings = Campus.get(this).getBuildings(); // Get dataset - list of crimes
+        mBuildings = Campus.get(this).getBuildings(); // Get data set - list of crimes
         FragmentManager fragmentManager = getSupportFragmentManager(); // Get activity's instance of FragmentManager
 
         // FragmentStatePagerAdapter is the agent managing conversation with ViewPager

@@ -17,10 +17,14 @@ public class BuildingListFragment extends Fragment {
     private RecyclerView mBuildingRecyclerView;
     private BuildingAdapter mAdapter;
 
-    //adding ability to use tabs
     public static final String ARG_PAGE = "ARG_PAGE";
-    private int mPage;
 
+    /**
+     * This function gives our app the ability to use tabs
+     *
+     * @param page Integer value of the page the tab is on
+     * @return The fragment the tab is on
+     */
     public static BuildingListFragment newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -28,19 +32,28 @@ public class BuildingListFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    //ended ability to use tabs
 
+    /**
+     * Create a new campus when the app is opened
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        // Load Buildings Occupancies from API
         setRetainInstance(true);
         new FetchBuildingsTask(Campus.get(getActivity())).execute();
     }
 
-
+    /**
+     * Set up the recycler view
+     *
+     * @param inflater Inflator for the view
+     * @param container Container for the view
+     * @param savedInstance Saved Instance if we need it
+     * @return The newly set up view
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
@@ -50,12 +63,18 @@ public class BuildingListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Update the UI whenever the tab is resumed
+     */
     @Override
     public void onResume() {
         super.onResume();
         updateUI();
     }
 
+    /**
+     * Check if the UI has changed and update if we need to
+     */
     private void updateUI() {
 
         Campus campus = Campus.get(getActivity());
@@ -69,6 +88,9 @@ public class BuildingListFragment extends Fragment {
         }
     }
 
+    /**
+     * This is a private class that will be used to set up a new camus by calling the API fetcher
+     */
     private class FetchBuildingsTask extends AsyncTask<Void, Void, Campus> {
 
         Campus campus;
@@ -80,7 +102,11 @@ public class BuildingListFragment extends Fragment {
         @Override
         protected Campus doInBackground(Void... params) {
             if (this.campus.getBuildings().size() == 0) {
-                return new APIFetcher().getOccupancyOfAllBuildings(this.campus);
+                campus = new APIFetcher().getOccupancyOfAllBuildings(this.campus);
+                Favorites fav = Favorites.get(getActivity());
+                List<Building> buildings = fav.getFavoriteBuildings(campus);
+
+                return campus;
             } else {
                 return this.campus;
             }

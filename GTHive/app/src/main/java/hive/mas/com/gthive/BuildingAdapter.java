@@ -18,6 +18,12 @@ public class BuildingAdapter extends RecyclerView.Adapter<BuildingHolder> {
         mBuildings = buildings;
     }
 
+    /**
+     * Set up the adapter for the recycler view
+     * @param parent The parent view
+     * @param viewType The type of view
+     * @return Return a new building holder
+     */
     @Override
     public BuildingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -26,12 +32,22 @@ public class BuildingAdapter extends RecyclerView.Adapter<BuildingHolder> {
         return new BuildingHolder(mActivity, view);
     }
 
+    /**
+     *  Binds the new building with the view
+     *
+     * @param holder The building holder
+     * @param position Where the holder should be palced in the recycler view
+     */
     @Override
     public void onBindViewHolder(BuildingHolder holder, int position) {
         Building building = mBuildings.get(position);
         holder.bindBuilding(building);
     }
 
+    /**
+     * Gives the number of buildings
+     * @return
+     */
     @Override
     public int getItemCount() {
         return mBuildings.size();

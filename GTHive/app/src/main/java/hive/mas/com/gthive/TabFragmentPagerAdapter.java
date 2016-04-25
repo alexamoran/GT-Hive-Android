@@ -5,8 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-
-//controls views on tabs and which view gets inflated with each tab
+/**
+ * Controls views on tabs and which view gets inflated with each tab
+ */
 public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] { "All Buildings", "Favorites" };
@@ -22,6 +23,12 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
         return PAGE_COUNT;
     }
 
+    /**
+     * Get the fragment at the current tab position
+     *
+     * @param position The tab position
+     * @return The fragment at that position
+     */
     @Override
     public Fragment getItem(int position) {
         switch (position) {
@@ -32,12 +39,18 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
                 // favorites list fragment activity
                 return FavoriteListFragment.newInstance(position + 1);
         }
+
         return null;
     }
 
+    /**
+     * Generate title based on item position
+     *
+     * @param position The current tab position
+     * @return The page title at the position
+     */
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
         return tabTitles[position];
     }
 }

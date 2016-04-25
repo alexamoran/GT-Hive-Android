@@ -18,6 +18,12 @@ public class FavoriteListFragment extends Fragment {
     private RecyclerView mBuildingRecyclerView;
     private BuildingAdapter mAdapter;
 
+    /**
+     * Establish a static instance of the favorite list fragment
+     *
+     * @param page The page number of the fragment for the tabs
+     * @return The fragment
+     */
     public static FavoriteListFragment newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -42,16 +48,24 @@ public class FavoriteListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Update the UI every time the activity is resumed
+     */
     @Override
     public void onResume() {
-        super.onResume();
         updateUI();
+        super.onResume();
     }
 
+    /**
+     * Private method that updates the recycler view for the favorites list
+     *
+     */
     private void updateUI() {
 
         Campus campus = Campus.get(getActivity());
-        List<Building> buildings = campus.getFavoriteBuildings();
+        Favorites favorites = Favorites.get(getActivity());
+        List<Building> buildings = favorites.getFavoriteBuildings(campus);
 
         if (mAdapter == null) {
             mAdapter = new BuildingAdapter(getActivity(), buildings);

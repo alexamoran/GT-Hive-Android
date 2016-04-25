@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -19,40 +20,48 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
     private Building mBuilding;
 
     private TextView mNameTextView;
-    private TextView mOccupancyTextView;
     private TextView mPercentageOccupiedTextView;
     private CheckBox mFavoriteCheckbox;
 
+    /**
+     * Constructor that takes in the activity and the view
+     *
+     * @param activity
+     * @param itemView
+     */
     public BuildingHolder(Activity activity, View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
 
         mActivity = activity;
         mNameTextView = (TextView) itemView.findViewById(R.id.list_item_building_name_text_view);
-        //mOccupancyTextView = (TextView) itemView.findViewById(R.id.list_item_building_occupancy_text_view);
         mPercentageOccupiedTextView = (TextView) itemView.findViewById(R.id.percentage_occupied_text_view);
         mFavoriteCheckbox = (CheckBox) itemView.findViewById(R.id.favorite_button);
     }
 
+    /**
+     * This will set up the CardView for each building
+     *
+     * @param building Building being set up for recycler view
+     */
     public void bindBuilding(Building building) {
         mBuilding = building;
         mNameTextView.setText(mBuilding.getName());
-        //mOccupancyTextView.setText("" + mBuilding.getOccupancy());
 
-        setFavoriteCheckbox();
+        mFavoriteCheckbox.setChecked(mBuilding.getFavorite());
 
-//        mFavoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//                Favorites favorites = Favorites.get(mActivity);
-//                if (isChecked) {
-//                    favorites.addBuildingId(mBuilding.getBId());
-//                } else {
-//                    favorites.removeBuildingId(mBuilding.getBId());
-//                }
-//            }
-//        });
+        mFavoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                Favorites favorites = Favorites.get(mActivity);
+                if (isChecked) {
+                    favorites.addBuildingId(mBuilding.getBId());
+                } else {
+                    favorites.removeBuildingId(mBuilding.getBId(), Campus.get(mActivity));
+                }
+            }
+        });
 
         setPercentageOccupiedTextView(building.getOccupancy());
     }
@@ -63,21 +72,15 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
         mActivity.startActivity(intent);
     }
 
+    /**
+     * This method will change the color of the occupancy textview for each building
+     *
+     * @param occupancyPercentage The occupancy of the building
+     */
     public void setPercentageOccupiedTextView(int occupancyPercentage) {
 
-        int color;
-        if (occupancyPercentage <= 80) {
-            color = R.color.Green3;
-        } else if (occupancyPercentage <= 90) {
-            color = R.color.Yellow6;
-        } else if (occupancyPercentage <= 95) {
-            color = R.color.Red9;
-        } else {
-            color = R.color.Red11;
-        }
-
-        mPercentageOccupiedTextView.setText("" + occupancyPercentage + "%");
-
+        int color = R.color.OldGold;
+        mPercentageOccupiedTextView.setText("" + occupancyPercentage + "");
         Drawable background = mPercentageOccupiedTextView.getBackground();
 
         // http://stackoverflow.com/questions/17823451/set-android-shape-color-programmatically
@@ -91,13 +94,5 @@ public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnCl
         } else {
             Log.e("PercentOccupiedTextView", "not selected");
         }
-    }
-
-    // Deafault favorites to false except buildings already in favorites
-    public void setFavoriteCheckbox() {
-        mFavoriteCheckbox.setChecked(false);
-//        if (mBuilding.isFavorite(mActivity)) {
-//            mFavoriteCheckbox.setChecked(true);
-//        }
     }
 }
