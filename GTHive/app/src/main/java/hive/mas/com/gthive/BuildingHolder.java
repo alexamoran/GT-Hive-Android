@@ -13,6 +13,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+/**
+ * Sets up all the information on each of the building CardViews before
+ * passing the cards to the adapter
+ *
+ */
 public class BuildingHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Activity mActivity;

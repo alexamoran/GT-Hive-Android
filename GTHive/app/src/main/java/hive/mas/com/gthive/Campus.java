@@ -7,6 +7,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This class holds all the information about the Georgia Tech Campus
+ * that was received from the WiFi routers
+ *
+ */
 public class Campus {
     private final String TAG = "CAMPUS";
     private static Campus sCampus;

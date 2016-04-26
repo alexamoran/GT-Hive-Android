@@ -11,7 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
 
-
+/**
+ * This class is used to help page between buildings when they are
+ * pressed on in the recycler view
+ *
+ */
 public class BuildingPagerActivity extends AppCompatActivity {
 
     private static final String EXTRA_BUILDING_ID = "hive.mas.com.gthive.building_id";
@@ -47,7 +51,7 @@ public class BuildingPagerActivity extends AppCompatActivity {
         // Find ViewPager
         mViewPager = (ViewPager) findViewById(R.id.activity_building_pager_view_pager);
 
-        mBuildings = Campus.get(this).getBuildings(); // Get data set - list of crimes
+        mBuildings = Campus.get(this).getBuildings(); // Get data set
         FragmentManager fragmentManager = getSupportFragmentManager(); // Get activity's instance of FragmentManager
 
         // FragmentStatePagerAdapter is the agent managing conversation with ViewPager

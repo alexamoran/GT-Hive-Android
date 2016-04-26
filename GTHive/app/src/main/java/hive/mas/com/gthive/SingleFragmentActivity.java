@@ -7,6 +7,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+/**
+ * This is the parent abstract class of the recycler view fragments that
+ * Were used to make the application
+ *
+ */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();

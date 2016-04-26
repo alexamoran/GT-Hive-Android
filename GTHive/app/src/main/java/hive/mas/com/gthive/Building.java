@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Class that is used to set up information about each building
+ *
+ */
 public class Building extends Location {
 
     private List<Floor> mFloors;
@@ -14,6 +18,8 @@ public class Building extends Location {
 
     /**
      * Constructor for building
+     *
+     * @param id The building id
      */
     public Building(String id) {
         super(id);
@@ -23,6 +29,9 @@ public class Building extends Location {
 
     /**
      * Constructor for building
+     *
+     * @param id The building id
+     * @param name The name of the building
      */
     public Building(String id, String name) {
         super(id, name);
@@ -32,6 +41,7 @@ public class Building extends Location {
 
     /**
      * Check to see if a building is in the favorites list
+     *
      * @param context The context of the favorites fragment
      * @return Either true or false
      */

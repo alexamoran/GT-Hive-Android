@@ -1,7 +1,9 @@
 package hive.mas.com.gthive;
 
 /**
- * Parent class of Building and floor
+ * Parent class of Building and floor. Set up to follow
+ * OOP principles.
+ *
  */
 public class Location {
 
@@ -10,12 +12,23 @@ public class Location {
     private String mName;
     private int mOccupancy;
 
+    /**
+     * Constructor for the location
+     *
+     * @param id The id of the building
+     */
     public Location(String id) {
         mId = id;
         loadBId();
         mOccupancy = 0;
     }
 
+    /**
+     * Constructor for the location
+     *
+     * @param id The id of the building
+     * @param name The Building name
+     */
     public Location(String id, String name) {
         mId = id;
         loadBId();

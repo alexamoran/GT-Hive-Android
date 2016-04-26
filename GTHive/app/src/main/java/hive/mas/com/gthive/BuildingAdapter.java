@@ -8,6 +8,11 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+/**
+ * Takes buildings from the Campus and binds them to CardViews
+ * in the Recycler View
+ *
+ */
 public class BuildingAdapter extends RecyclerView.Adapter<BuildingHolder> {
 
     private Activity mActivity;
@@ -20,6 +25,7 @@ public class BuildingAdapter extends RecyclerView.Adapter<BuildingHolder> {
 
     /**
      * Set up the adapter for the recycler view
+     *
      * @param parent The parent view
      * @param viewType The type of view
      * @return Return a new building holder

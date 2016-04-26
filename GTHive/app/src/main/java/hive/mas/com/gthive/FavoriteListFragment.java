@@ -10,6 +10,11 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+/**
+ * This fragment controls and displays the recycler view for all of the buildings
+ * in the favorites list. (The favorites tab of the application.)
+ *
+ */
 public class FavoriteListFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 

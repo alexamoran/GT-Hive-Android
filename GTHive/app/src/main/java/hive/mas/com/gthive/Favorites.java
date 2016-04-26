@@ -12,7 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * Class that controls the contents of the Favorites list of the application
+ */
 public class Favorites {
 
     private static Favorites sFavorites;
@@ -34,6 +36,7 @@ public class Favorites {
 
     /**
      * Constructor for the class
+     *
      * @param context
      */
     private Favorites(Context context) {
@@ -101,7 +104,7 @@ public class Favorites {
     /**
      * Add a building to the favorites
      *
-     * @param bid The buiding to be added
+     * @param bid The building to be added
      */
     public void addBuildingId(String bid) {
         mBuildingIds.add(bid);

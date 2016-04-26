@@ -11,7 +11,11 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-
+/**
+ * This fragment controls and displays the recycler view for all of the buildings
+ * On the Georgia Tech Campus. (The home page of the application.)
+ *
+ */
 public class BuildingListFragment extends Fragment {
 
     private RecyclerView mBuildingRecyclerView;

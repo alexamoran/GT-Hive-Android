@@ -1,6 +1,7 @@
 package hive.mas.com.gthive;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,19 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
+/**
+ * This class is used to set up the more information pages for each building
+ * whenever a building is clicked from the recycler view
+ *
+ */
 public class BuildingFragment extends android.support.v4.app.Fragment {
 
     private static final String ARG_BUILDING_ID = "building_id";
@@ -60,77 +71,126 @@ public class BuildingFragment extends android.support.v4.app.Fragment {
      * @param inflater The inflator for the view
      * @param container The container for the view
      * @param savedInstanceState
-     * @return
+     * @return The view for the building
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_building, container, false);
 
         mOccupancyTextView = (TextView) v.findViewById(R.id.occupancy);
-        mOccupancyTextView.setText("" + mBuilding.getName()+ "\n" + "Total Occupancy: "+ mBuilding.getOccupancy());
+        mOccupancyTextView.setText("" + mBuilding.getName() + "\n" + "Total Occupancy: " + mBuilding.getOccupancy());
 
 
-        /* Draw Line Graph */
+        /* Set Up Graph */
 
-        int averageCrowdValues = (int)(100 * (Math.random() * 10));
-        // List<Integer> todaysCrowdValues = mBuilding.getTodaysCrowdValues();
-        // List<Integer> rodCrowdValues = mBuilding.getRodCrowdValues();
-        // temporarily using random numbers
-        List<Integer> todaysCrowdValues = new ArrayList<>();
-        List<Integer> rodCrowdValues = new ArrayList<>();
-        //List<Integer> rodCrowdValues = FetchAverages(rodCrowdValues);
-        for (int i = 0; i < 12; i++) todaysCrowdValues.add( (int)(100 * (Math.random() * 10)));
-        for (int i = 0; i < 12; i++) rodCrowdValues.add( (int)(100 * (Math.random() * 10)));
+        List<Integer> todaysCrowd = new ArrayList<>();
+        List<Integer> averageCrowd = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {todaysCrowd.add(0); averageCrowd.add(0);}
 
-        drawLineChart(v, averageCrowdValues, todaysCrowdValues, rodCrowdValues);
+        // Query our API for the average value points for the building
+        FetchValuesTask task1 = new FetchValuesTask(averageCrowd, mBuilding.getBId(),"avg");
+
+        List<List<Integer>> myList1 = new ArrayList<>();
+        try {
+            myList1.add(task1.execute().get());
+        } catch (InterruptedException ie) {
+
+        } catch (ExecutionException ee) {
+
+        }
+
+        averageCrowd = myList1.get(0);
+
+        // Query our API for today's value points for the building
+        FetchValuesTask task2 = new FetchValuesTask(averageCrowd, mBuilding.getBId(),"today");
+
+        List<List<Integer>> myList2 = new ArrayList<>();
+        try {
+            myList2.add(task2.execute().get());
+        } catch (InterruptedException ie) {
+
+        } catch (ExecutionException ee) {
+
+        }
+
+        todaysCrowd = myList2.get(0);
+
+
+        // Get the current hour of the day for todays List
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateandTime = sdf.format(new Date());
+        String hour = currentDateandTime.substring(9, 11);
+        Scanner s = new Scanner(hour);
+        int todayHour = s.nextInt();
+
+        // Adjust today's crowd
+        List<Integer> adjustedTodaysCrowd = new ArrayList<>();
+        for (int i = 0; i <= todayHour; i++) {
+            adjustedTodaysCrowd.add(todaysCrowd.get(i));
+        }
+
+        // Adjust the average crowd
+        List<Integer> adjustedAverageCrowd = new ArrayList<>();
+        for (int i = adjustedTodaysCrowd.size() + 1; i < 24; i++) {
+            adjustedAverageCrowd.add(averageCrowd.get(i));
+        }
+
+        drawLineChart(v, adjustedTodaysCrowd, adjustedAverageCrowd);
 
         // Set up and display the best time to go to the building
+        List<Integer> currentData = new ArrayList<>();
+        for (int i = 0; i < adjustedTodaysCrowd.size(); i++) {currentData.add(adjustedTodaysCrowd.get(i));}
+        for (int i = 0; i < adjustedAverageCrowd.size(); i++) {currentData.add(adjustedAverageCrowd.get(i));}
         mFirstBestTimeTextView = (TextView) v.findViewById(R.id.best_times_id);
         mFirstBestTimeTextView.setText("Estimated Best Times To Go:");
 
         mFirstBestTimeTextView = (TextView) v.findViewById(R.id.first_best_time_text_view);
         int minMorning = 1000000;
         int index = 0;
-        for (int i = 5; i < 11; i++) {
-            int temp = rodCrowdValues.get(i);
+        for (int i = 7; i <= 12; i++) {
+            int temp = averageCrowd.get(i);
             if (temp < minMorning) {
                 minMorning = temp;
                 index = i;
             }
         }
-        String a = "am";
         if (index == 12) {
-            a = "pm";
+            mFirstBestTimeTextView.setText("12pm");
+        } else {
+            mFirstBestTimeTextView.setText(index + "am");
         }
-        mFirstBestTimeTextView.setText(index+a);
 
         mSecondBestTimeTextView = (TextView) v.findViewById(R.id.second_best_time_text_view);
         int minAfternoon = 1000000;
         index = 0;
-        for (int i = 11; i < 17; i++) {
-            int temp = rodCrowdValues.get(i);
+        for (int i = 13; i <= 17; i++) {
+            int temp = averageCrowd.get(i);
             if (temp < minAfternoon) {
                 minAfternoon = temp;
                 index = i;
             }
         }
-        mSecondBestTimeTextView.setText(index+"pm");
+        mSecondBestTimeTextView.setText((index - 11) + "pm");
 
         mThirdBestTimeTextView = (TextView) v.findViewById(R.id.third_best_time_text_view);
         int minNight = 1000000;
         index = 0;
-        for (int i = 17; i < 23; i++) {
-            int temp = rodCrowdValues.get(i);
+        for (int i = 18; i < 24; i++) {
+            int temp = averageCrowd.get(i);
             if (temp < minNight) {
                 minNight = temp;
                 index = i;
             }
         }
-        a = "pm";
-        if (index == 12) {
-            a = "am";
+        if (averageCrowd.get(0) < minNight) {
+            index = 0;
         }
-        mThirdBestTimeTextView.setText(index + a);
+
+        if (index == 0) {
+            mThirdBestTimeTextView.setText("12am");
+        } else {
+            mThirdBestTimeTextView.setText((index - 11) + "pm");
+        }
 
 
         // Set up Floors linear layout
@@ -163,52 +223,41 @@ public class BuildingFragment extends android.support.v4.app.Fragment {
      * Actually draw the line graph on the Building Page
      *
      * @param v The view being drawn into
-     * @param averageCrowdValue The average crowd values
      * @param todaysCrowdValues Today's crowd values
+     * @param avgCrowdValues The average Crowd for this building over the day
      */
-    public void drawLineChart(View v, int averageCrowdValue, List<Integer> todaysCrowdValues, List<Integer> rodCrowdValues) {
+    public void drawLineChart(View v, List<Integer> todaysCrowdValues, List<Integer> avgCrowdValues) {
 
-        /* Create data entries1 and labels for todaysCrowd Values*/
+        /* Create data entries1 and labels for todaysCrowd Values */
         ArrayList<Entry> entries1 = new ArrayList<>();
-        ArrayList<String> labels = new ArrayList<>();
         for (int hour = 0; hour < todaysCrowdValues.size(); hour++) {
             entries1.add(new Entry(todaysCrowdValues.get(hour), hour));
-            labels.add("" + hour);
         }
 
-        /* Create data entries2 and labels for rodCrowdValues Values*/
+        /* Create data entries2 and labels for rodCrowdValues Values */
         ArrayList<Entry> entries2 = new ArrayList<>();
-        for (int hour = 0; hour < rodCrowdValues.size(); hour++) {
-            entries2.add(new Entry(rodCrowdValues.get(hour), hour + todaysCrowdValues.size()));
-            labels.add("" + (hour  + todaysCrowdValues.size()));
+        for (int hour = 0; hour < avgCrowdValues.size(); hour++) {
+            entries2.add(new Entry(avgCrowdValues.get(hour), hour + todaysCrowdValues.size()));
         }
-
-        /* Create data entries for averageCrowdValue */
-        ArrayList<Entry> entries3 = new ArrayList<>();
-        entries3.add(new Entry(averageCrowdValue, 0)); entries3.add(new Entry(averageCrowdValue, 23));
 
         // Create data set from data entries1
         LineDataSet dataset1 = new LineDataSet(entries1, "Today's Crowd");
         LineDataSet dataset2 = new LineDataSet(entries2, "Predicted Crowd");
-        //LineDataSet dataset3 = new LineDataSet(entries3, "Average Crowd");
 
-        // Set the color for this data set
+        // Set the color for the data sets
         dataset1.setColor(Color.rgb(0, 37, 76)); // GT Navy
         dataset2.setColor(Color.rgb(238, 178, 17)); // Buzz Gold
-        //dataset3.setColor(Color.rgb(197, 147, 83)); // GT Gold
 
-        // Aggregate all data sets
+        // Aggregate the data sets
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
         dataSets.add(dataset1);
         dataSets.add(dataset2);
-        //dataSets.add(dataset3);
 
         /* Create the chart */
         LineChart chart = (LineChart) v.findViewById(R.id.chart);
 
-        // Hide Labels and grid lines from x axis
+        // Hide grid lines from x axis
         chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setDrawLabels(true);
 
         // Hide labels and grid lines from y axis
         chart.getAxisLeft().setDrawGridLines(false);
@@ -218,16 +267,40 @@ public class BuildingFragment extends android.support.v4.app.Fragment {
 
         // Don't label each node on graph
         chart.setDrawMarkerViews(false);
-        LineData data = new LineData(labels, dataSets);
+        chart.setDescription(" ");
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setPinchZoom(false);
+
+        List<String> myList = new ArrayList(Arrays.asList("12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"));
+        chart.getXAxis().setLabelsToSkip(1);
+        chart.getXAxis().setTextSize(6);
+        LineData data = new LineData(myList, dataSets);
+
         chart.setData(data);
-
-        chart.setDescription("Today's Crowd");
-
-        // animations
         chart.animateY(1000);
     }
 
-    private List<Integer> FetchAverages(List<Integer> averages, String bid) {
-        return new APIFetcher().getAverages(averages, bid);
+    /**
+     * This is a private class that will be used to get the values
+     * For the graph for each building
+     *
+     */
+    private class FetchValuesTask extends AsyncTask<Void, Void, List<Integer>> {
+
+        List<Integer> values;
+        String bid;
+        String str;
+
+        protected FetchValuesTask(List<Integer> values, String bid, String str) {
+            this.values = values;
+            this.bid = bid;
+            this.str = str;
+        }
+
+        @Override
+        protected List<Integer> doInBackground(Void... params) {
+            this.values = new APIFetcher().getValues(bid, str);
+            return this.values;
+        }
     }
 }
